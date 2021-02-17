@@ -107,7 +107,7 @@
           <div class="form-group col-md-4">
             <label for="article">Choisir article</label>
             <select
-              @input="$forceUpdate()"
+              @change="$forceUpdate()"
               v-model="client.articles[index].article"
               name="article"
               class="custom-select"
@@ -137,7 +137,7 @@
           <div class="form-group col-md-3">
             <label for="article">Choisir employé</label>
             <select
-              @input="$forceUpdate()"
+              @change="$forceUpdate()"
               v-model="client.articles[index].name"
               name="name"
               class="custom-select"
@@ -184,7 +184,7 @@
           <div class="form-group col-md-4">
             <label for="article">Choisir article</label>
             <select
-              @input="$forceUpdate()"
+              @change="$forceUpdate()"
               v-model="client.articles[index].article"
               name="article"
               class="custom-select"
@@ -214,7 +214,7 @@
           <div class="form-group col-md-3">
             <label for="article">Choisir employé</label>
             <select
-              @input="$forceUpdate()"
+              @change="$forceUpdate()"
               v-model="client.articles[index].name"
               name="name"
               class="custom-select"
