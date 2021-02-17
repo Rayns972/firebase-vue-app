@@ -85,7 +85,6 @@
             </div>
           </div>
         </form>
-
         <div
           class="row row-cols-4"
           v-for="(article, index, key) in client.articles"
@@ -95,7 +94,8 @@
             <label for="qte">Quantité</label>
 
             <input
-              v-model="article.qty"
+              @input="$forceUpdate()"
+              v-model="client.articles[index].qty"
               class="form-control"
               type="number"
               value="1"
@@ -107,7 +107,8 @@
           <div class="form-group col-md-4">
             <label for="article">Choisir article</label>
             <select
-              v-model="article.article"
+              @input="$forceUpdate()"
+              v-model="client.articles[index].article"
               name="article"
               class="custom-select"
               aria-label="Default select example"
@@ -128,14 +129,16 @@
               type="text"
               class="form-control"
               name="Taille"
-              v-model="article.taille"
+              @input="$forceUpdate()"
+              v-model="client.articles[index].taille"
             />
           </div>
           <!-- employé -->
           <div class="form-group col-md-3">
             <label for="article">Choisir employé</label>
             <select
-              v-model="article.name"
+              @input="$forceUpdate()"
+              v-model="client.articles[index].name"
               name="name"
               class="custom-select"
               aria-label="Default select example"
@@ -157,7 +160,6 @@
               >delete</span
             >
           </div>
-          
         </div>
 
         <div
@@ -169,7 +171,8 @@
             <label for="qte">Quantité</label>
 
             <input
-              v-model="article.qty"
+              @input="$forceUpdate()"
+              v-model="client.articles[index].qty"
               class="form-control"
               type="number"
               value="1"
@@ -181,7 +184,8 @@
           <div class="form-group col-md-4">
             <label for="article">Choisir article</label>
             <select
-              v-model="article.article"
+              @input="$forceUpdate()"
+              v-model="client.articles[index].article"
               name="article"
               class="custom-select"
               aria-label="Default select example"
@@ -202,14 +206,16 @@
               type="text"
               class="form-control"
               name="Taille"
-              v-model="article.taille"
+              @input="$forceUpdate()"
+              v-model="client.articles[index].taille"
             />
           </div>
           <!-- employé -->
           <div class="form-group col-md-3">
             <label for="article">Choisir employé</label>
             <select
-              v-model="article.name"
+              @input="$forceUpdate()"
+              v-model="client.articles[index].name"
               name="name"
               class="custom-select"
               aria-label="Default select example"
@@ -230,7 +236,6 @@
               >delete</span
             >
           </div>
-          
         </div>
 
         <!-- quantite -->
@@ -332,9 +337,10 @@ export default {
       employe: null,
       article: null,
       name: null,
-      qty: null,
+      qty: null
     };
   },
+
   methods: {
     EditClient() {
       if ((this.client.title, this.client.nom)) {
@@ -343,7 +349,7 @@ export default {
         this.client.slug = slugify(this.client.title + this.client.nom, {
           replacement: "-",
           remove: /[$*_+~.()'"!\-:@]/g,
-          lower: true,
+          lower: true
         });
         db.collection("clients")
           .doc(this.client.id)
@@ -356,26 +362,31 @@ export default {
             adresse: this.client.adresse,
             ville: this.client.ville,
             cp: this.client.cp,
-            slug: this.client.slug,
+            slug: this.client.slug
           })
-
-          
-
-          .then((data) => {
-            this.articles.forEach((element, index) => {
-              db.collection("clients")
-                .doc(this.client.id)
-                .collection("articles")
-                .add({
-                  ...element,
-                });
-            });
+          .then(data => {
+            if (this.client.articles) {
+              console.warn(this.client.articles);
+              this.client.articles.forEach((element, index) => {
+                db.collection("clients")
+                  .doc(this.client.id)
+                  .collection("articles")
+                  .doc(element.id)
+                  .set({ ...element });
+                // just random methods
+                // .delete()
+                // .add({
+                //   ...element
+                // });
+              });
+            } else {
+              alert("vous n'avez ajouté aucun article");
+            }
           })
-
           .then(() => {
             this.$router.push({ name: "Index" });
           })
-          .catch((err) => {
+          .catch(err => {
             console.log(err);
           });
       } else {
@@ -387,8 +398,6 @@ export default {
       this.articles.splice(i, 1);
     },
 
-   
-
     deleteArticle(id) {
       if (confirm("Êtes-vous sur de vouloir supprimer cet article ?")) {
         //effacer de firestore
@@ -398,9 +407,10 @@ export default {
           .doc(id)
           .delete()
           .then(() => {
-            this.articles = this.articles.filter((article) => {
-              return article.id != id;
-            });
+            this.client.articles = this.client.articles.filter(
+              a => a.id !== id
+            );
+            this.$forceUpdate();
           });
       }
     },
@@ -410,9 +420,11 @@ export default {
           qty: this.qty,
           taille: this.taille,
           article: this.article,
-          name: this.name,
+          name: this.name
         };
-        this.articles.push(article);
+        this.client.articles
+          ? this.client.articles.push(article)
+          : (this.client.articles = [{ ...article }]);
         this.qty = null;
         this.taille = null;
         this.article = null;
@@ -423,25 +435,25 @@ export default {
       }
     },
     deleteIng(ing) {
-      this.client.ingredients = this.client.ingredients.filter((ingredient) => {
+      this.client.ingredients = this.client.ingredients.filter(ingredient => {
         return ingredient != ing;
       });
-    },
+    }
   },
   created() {
     let ref = db
       .collection("clients")
       .where("slug", "==", this.$route.params.client_slug);
-    ref.get().then((snapshot) => {
-      snapshot.forEach((doc) => {
+    ref.get().then(snapshot => {
+      snapshot.forEach(doc => {
         this.client = doc.data();
         this.client.id = doc.id;
         db.collection("clients")
           .doc(doc.id)
           .collection("articles")
           .get()
-          .then((snapshot) => {
-            snapshot.forEach((doc) => {
+          .then(snapshot => {
+            snapshot.forEach(doc => {
               // get sub-collection data
               console.log(doc.data());
               let article = doc.data();
@@ -449,12 +461,14 @@ export default {
 
               // get sub-collection id
 
+              console.warn("._.", this.client.articles);
               if (this.client.articles) {
                 this.client.articles.push(article);
               } else {
                 // this the first item, that means there is no article item
                 this.client.articles = [{ ...article }];
               }
+              this.$forceUpdate();
             });
             // after all this push all data into clients
             this.clients.push(this.client);
@@ -465,8 +479,8 @@ export default {
         .collection("articles")
         .orderBy("titre", "asc")
         .get()
-        .then((snapshot) => {
-          snapshot.forEach((doc) => {
+        .then(snapshot => {
+          snapshot.forEach(doc => {
             let article = doc.data();
 
             article.id = doc.id;
@@ -477,15 +491,15 @@ export default {
     db.collection("employes")
       .orderBy("name", "asc")
       .get()
-      .then((snapshot) => {
-        snapshot.forEach((doc) => {
+      .then(snapshot => {
+        snapshot.forEach(doc => {
           let employe = doc.data();
 
           employe.id = doc.id;
           this.employesAutoComplete.push(employe);
         });
       });
-  },
+  }
 };
 </script>
 
