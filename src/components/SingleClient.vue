@@ -12,9 +12,9 @@
           <span class="material-icons">edit</span>
         </router-link>
 
-        <span class="material-icons" @click="deleteClient(client.id)"
-          >delete</span
-        >
+        <span class="material-icons" @click="deleteClient(client.id)">
+          delete
+        </span>
 
         <label>
           <span></span>
@@ -86,7 +86,7 @@ export default {
       showDetails: false,
       articles: [],
       article: { isChecked: "" },
-      completed: false,
+      completed: false
     };
   },
 
@@ -94,19 +94,16 @@ export default {
     deleteClient(id) {
       if (confirm("Êtes-vous sur de vouloir supprimer ce client ?")) {
         //effacer de firestore
-        db.collection('clients')
+        db.collection("clients")
           .doc(id)
           .delete()
           .then(() => {
-            this.clients = this.clients.filter((client) => {
+            this.clients = this.clients.filter(client => {
               return client.id != id;
             });
           });
-          
       }
     },
-
-    
 
     updateArticle(docId, e) {
       var isChecked = e.target.checked;
@@ -115,7 +112,7 @@ export default {
         .collection("articles")
         .doc(docId)
         .update({
-          isChecked: isChecked,
+          isChecked: isChecked
         });
     },
 
@@ -125,30 +122,30 @@ export default {
         .doc(this.client.id)
 
         .update({
-          completed: completed,
+          completed: completed
         });
     },
     mark(i) {
       db.collection("clients")
         .doc(id)
         .update({
-          articles: db.FieldValue.arrayUnion("value1", "value2"),
+          articles: db.FieldValue.arrayUnion("value1", "value2")
         })
         .then(() => {
-          this.clients = this.clients.filter((client) => {
+          this.clients = this.clients.filter(client => {
             return client.id != id;
           });
         });
-    },
+    }
   },
   created() {
     //récuperer data de firestore
-    
+
     db.collection("clients")
 
       .get()
-      .then((snapshot) => {
-        snapshot.forEach((doc) => {
+      .then(snapshot => {
+        snapshot.forEach(doc => {
           let client = doc.data();
           client.id = doc.id;
 
@@ -157,16 +154,13 @@ export default {
             .doc(doc.id)
             .collection("articles")
             .get()
-            .then((snapshot) => {
-              snapshot.forEach((doc) => {
+            .then(snapshot => {
+              snapshot.forEach(doc => {
                 // get sub-collection data
                 let article = doc.data();
 
                 // get sub-collection id
                 article.id = doc.id;
-                
-
-                
 
                 if (client.articles) {
                   client.articles.push(article);
@@ -182,9 +176,8 @@ export default {
         });
 
         this.loading = false;
-        
       });
-  },
+  }
 };
 </script>
 

@@ -1,9 +1,13 @@
 <template>
   <div class="home">
     <div class="filtre">
-      <FilterNav @filterChange="current = $event" :current="current" />
+      <FilterClientsNav
+        @filterChange="current = $event"
+        :clients="filteredClients"
+        :current="current"
+      />
     </div>
-    <div v-for="client in filteredClients" :key="client.id">
+    <div v-for="client in currentClient" :key="client.id">
       <SingleClient :client="client" />
     </div>
     <div>
@@ -15,19 +19,16 @@
 <script>
 import db from "@/firebase/init";
 import SingleClient from "../components/SingleClient.vue";
-import FilterNav from "../components/FilterNav.vue";
+import FilterClientsNav from "../components/FilterClientsNav.vue";
 
 export default {
-  name: "Order",
-  components: { SingleClient, FilterNav },
+  name: "Index",
+  components: { SingleClient, FilterClientsNav },
   data() {
     return {
       clients: [],
-
       showDetails: false,
-      current: "all",
-      last: null,
-      suivant: [],
+      current: ""
     };
   },
 
@@ -36,36 +37,44 @@ export default {
       db.collection("clients")
         .doc(id)
         .update({
-          articles: db.FieldValue.arrayUnion("value1", "value2"),
+          articles: db.FieldValue.arrayUnion("value1", "value2")
         })
         .then(() => {
-          this.clients = this.clients.filter((client) => {
+          this.clients = this.clients.filter(client => {
             return client.id != id;
           });
         });
-    },
+    }
   },
   computed: {
+    currentClient() {
+      let current;
+      try {
+        current = this.current ? this.current : this.filteredClients[0].id;
+      } catch (error) {
+        return null;
+      }
+      return this.filteredClients.filter(c => c.id == current);
+    },
     filteredClients() {
       if (this.current === "complet") {
-        return this.clients.filter((client) => client.completed);
+        return this.clients.filter(client => client.completed);
       }
       if (this.current === "encours") {
-        return this.clients.filter((client) => !client.completed);
+        return this.clients.filter(client => !client.completed);
       }
       return this.clients;
-    },
+    }
   },
   created() {
     //récuperer data de firestore
 
     db.collection("clients")
-      .orderBy("name", "desc")
-      .equalTo('Aucun')
+      .orderBy("createdAt", "desc")
 
       .get()
-      .then((snapshot) => {
-        snapshot.forEach((doc) => {
+      .then(snapshot => {
+        snapshot.forEach(doc => {
           let client = doc.data();
           client.id = doc.id;
 
@@ -74,8 +83,8 @@ export default {
             .doc(doc.id)
             .collection("articles")
             .get()
-            .then((snapshot) => {
-              snapshot.forEach((doc) => {
+            .then(snapshot => {
+              snapshot.forEach(doc => {
                 // get sub-collection data
                 let article = doc.data();
 
@@ -95,6 +104,9 @@ export default {
         });
       });
   },
+  async mounted() {
+    this.filteredClients.map(v => console.log(v.nom));
+  }
 };
 </script>
 
