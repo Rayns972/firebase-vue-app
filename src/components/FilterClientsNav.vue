@@ -1,13 +1,18 @@
 <template>
   <nav class="filter-nav">
+    <!-- <span v-for="(c, i, k) in clients" :key="k"> -->
     <button
-      @click="updateFilter(c.id)"
-      :class="{ active: (!current && i == 0) || current === c.id }"
-      v-for="(c, i, k) in clients"
-      :key="k"
+      v-for="(imp, index, key) in uniqClients"
+      :key="key"
+      @click="updateFilter(imp)"
+      :class="{
+        active:
+          (!(current && current.id) && index == 0) || current.id === imp.id
+      }"
     >
-      {{ c.nom }}
+      {{ imp.name }}
     </button>
+    <!-- </span> -->
   </nav>
 </template>
 
@@ -17,6 +22,21 @@ export default {
   methods: {
     updateFilter(by) {
       this.$emit("filterChange", by);
+      console.log(by);
+    }
+  },
+  computed: {
+    uniqClients() {
+      let data = [];
+      this.clients.map(imp => {
+        imp.articles.map(a => {
+          let found = false;
+          data.forEach(d => (d.name === a.name ? (found = true) : null));
+          found ? null : data.push({ ...a });
+        });
+      });
+      console.log(data);
+      return data;
     }
   }
 };

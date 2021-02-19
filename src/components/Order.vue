@@ -7,7 +7,7 @@
         :current="current"
       />
     </div>
-    <div v-for="client in currentClient" :key="client.id">
+    <div v-for="(client, i, k) in currentClient" :key="k">
       <SingleClient :client="client" />
     </div>
     <div>
@@ -50,19 +50,17 @@ export default {
     currentClient() {
       let current;
       try {
-        current = this.current ? this.current : this.filteredClients[0].id;
+        current = this.current || this.filteredClients[0].articles[0];
       } catch (error) {
         return null;
       }
-      return this.filteredClients.filter(c => c.id == current);
+      let cClient = [];
+      this.filteredClients.map(c =>
+        c.articles.map(n => (n.name === current.name ? cClient.push(c) : null))
+      );
+      return cClient;
     },
     filteredClients() {
-      if (this.current === "complet") {
-        return this.clients.filter(client => client.completed);
-      }
-      if (this.current === "encours") {
-        return this.clients.filter(client => !client.completed);
-      }
       return this.clients;
     }
   },
