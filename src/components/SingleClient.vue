@@ -71,10 +71,15 @@
         }}
       </a>
     </div>
+    
   </div>
 </template>
 
 <script>
+
+
+
+
 import db from "@/firebase/init";
 
 export default {
@@ -89,6 +94,18 @@ export default {
       completed: false,
     };
   },
+
+  
+
+remaining: function() {
+            return filters.active(this.article).length;
+          },
+
+computed: {
+  total: function() {
+    return this.articles.qty + 1;
+  }
+},
 
   methods: {
     deleteClient(id) {
