@@ -4,7 +4,7 @@
       <h2 class="card-title">Modifier client</h2>
     </div>
 
-    <div class="card mx-auto add" style="width: 80%">
+    <div class="card mx-auto add" style="width: 95%">
       <form class="card-body add" @submit.prevent="EditClient">
         <form>
           <div class="form-row">
@@ -83,6 +83,7 @@
               <label for="inputZip">CP</label>
               <input type="text" class="form-control" v-model="client.cp" />
             </div>
+        
           </div>
         </form>
         <div
@@ -302,14 +303,14 @@
           </div>
         </div>
 
-        <button class="btn btn-primary" type="submit" @click.prevent="addIng()">
+        <button class="btn-add" type="submit" @click.prevent="addIng()">
           Ajouter
         </button>
 
-        <div class="field center-align">
+        <div class="save-exit">
           <p v-if="feedback" class="red-text">{{ feedback }}</p>
-          <button type="submit" class="btn blue">{{ "Enregistrer" }}</button>
-          <router-link to="/" class="btn grey">Annuler</router-link>
+          <button type="submit" class="btn-save">{{ "Enregistrer" }}</button>
+          <router-link to="/" class="btn-cancel">Annuler</router-link>
         </div>
       </form>
     </div>
@@ -318,10 +319,17 @@
 <script>
 import db from "@/firebase/init";
 import slugify from "slugify";
+import 'bootstrap/dist/css/bootstrap.css';
+
+import {fr} from 'vuejs-datepicker/dist/locale'
+import Datepicker from 'vuejs-datepicker';
+import moment from 'moment';
+
 export default {
   name: "EditClient",
   data() {
     return {
+      fr: fr,
       clients: [],
       client: null,
       another: null,
@@ -340,8 +348,16 @@ export default {
       qty: null
     };
   },
+components: {
+      Datepicker
+    },
 
   methods: {
+
+customFormatter(date) {
+      return moment(date).format('D-MM-yyyy');
+    },
+
     EditClient() {
       if ((this.client.title, this.client.nom)) {
         this.feedback = null;
@@ -362,6 +378,7 @@ export default {
             adresse: this.client.adresse,
             ville: this.client.ville,
             cp: this.client.cp,
+            dateliv: this.client.dateliv,
             slug: this.client.slug
           })
           .then(data => {
@@ -506,15 +523,30 @@ export default {
 <style>
 body {
   background: #3978b7;
-  font-family: "Ubuntu", sans-serif;
+  font-family: "IBM Plex Sans", sans-serif;
 }
-
+a {
+    font-size: 13px;
+}
+.save-exit {
+    text-align: center;
+    margin-top: 20px;
+}
 .card {
   border-left: 0px solid rgba(23, 143, 97, 0);
   border-radius: 6px;
   margin-bottom: 20px;
 }
-
+.form-row {
+    display: -ms-flexbox;
+    display: -webkit-box;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -5px;
+    margin-left: -5px;
+    margin-top: 10px;
+}
 .add-client {
   margin-top: 0px;
   padding: 20px;
@@ -543,5 +575,84 @@ span.material-icons.del {
   position: relative;
   top: 37px;
   cursor: pointer;
+}
+
+
+
+.btn-save {
+    margin-right: 5px;
+    margin-left: 5px;
+    margin-bottom: 10px;
+    background-color: #ffffff00;
+    border-radius: 6px;
+    border-style: solid;
+    padding: 5px 8px 4px 8px;
+    border-color: #4687be;
+    border-width: 1px;
+    color: white;
+    font-variant: all-petite-caps;
+    font-weight: 700;
+        font-size: 18px !important;
+        background-color: #4687be;
+}
+.btn-save:hover {
+    background-color: #72c7e7;
+    border-color: #72c7e7;
+}
+
+.btn-save.active {
+    background-color: #ffffff;
+    border-color: #ffffff;
+    color: #3978b7;
+}
+
+
+.btn-cancel {
+    margin-right: 5px;
+    margin-left: 5px;
+    margin-bottom: 10px;
+    background-color: #ffffff00;
+    border-radius: 6px;
+    border-style: solid;
+    padding: 5px 8px 4px 8px;
+    border-color: #b7b7b7;
+    border-width: 1px;
+    color: white;
+    font-variant: all-petite-caps;
+    font-weight: 700;
+        font-size: 18px !important;
+        background-color: #b7b7b7;
+}
+.btn-cancel:hover {
+    background-color: #72c7e7;
+    border-color: #72c7e7;
+    color: #fff;
+}
+
+.btn-cancel.active {
+    background-color: #ffffff;
+    border-color: #ffffff;
+    color: #3978b7;
+}
+
+.btn-add {
+    margin-right: 5px;
+    margin-left: 5px;
+    margin-bottom: 10px;
+    background-color: #ffffff00;
+    border-radius: 6px;
+    border-style: solid;
+    padding: 5px 8px 4px 8px;
+    border-color: #4687be;
+    border-width: 1px;
+    color: white;
+    font-variant: all-petite-caps;
+    font-weight: 700;
+        font-size: 18px !important;
+        background-color: #4687be;
+}
+.btn-add:hover {
+    background-color: #72c7e7;
+    border-color: #72c7e7;
 }
 </style>

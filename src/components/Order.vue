@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div style="width: 95%;margin: auto;">
     <div class="filtre">
       <FilterClientsNav
         @filterChange="current = $event"
@@ -7,12 +7,10 @@
         :current="current"
       />
     </div>
-    <div v-for="client in currentClient" :key="client.id">
-      <SingleClient :client="client" />
+    <div v-for="(client, i, k) in currentClient" :key="k">
+      <SingleClient :client="client"/>
     </div>
-    <div>
-      <button @click.prevent="suivant()" class="btn suivant">Suite...</button>
-    </div>
+    
   </div>
 </template>
 
@@ -20,6 +18,7 @@
 import db from "@/firebase/init";
 import SingleClient from "../components/SingleClient.vue";
 import FilterClientsNav from "../components/FilterClientsNav.vue";
+
 
 export default {
   name: "Index",
@@ -50,19 +49,17 @@ export default {
     currentClient() {
       let current;
       try {
-        current = this.current ? this.current : this.filteredClients[0].id;
+        current = this.current || this.filteredClients[0].articles[0];
       } catch (error) {
         return null;
       }
-      return this.filteredClients.filter(c => c.id == current);
+      let cClient = [];
+      this.filteredClients.map(c =>
+        c.articles.map(n => (n.name === current.name ? cClient.push(c) : null))
+      );
+      return cClient;
     },
     filteredClients() {
-      if (this.current === "complet") {
-        return this.clients.filter(client => client.completed);
-      }
-      if (this.current === "encours") {
-        return this.clients.filter(client => !client.completed);
-      }
       return this.clients;
     }
   },
@@ -70,7 +67,7 @@ export default {
     //récuperer data de firestore
 
     db.collection("clients")
-      .orderBy("createdAt", "desc")
+      .orderBy("timestamp", "desc")
 
       .get()
       .then(snapshot => {
@@ -120,6 +117,10 @@ export default {
   /* width: 90%; */
 }
 
+a {
+    font-size: 13px;
+}
+
 .collection {
   margin: -0.7rem 0 1rem 0;
   border: 1px solid #e0e0e0;
@@ -131,7 +132,7 @@ export default {
 body {
   background: #3978b7;
 
-  font-family: "Ubuntu", sans-serif;
+  font-family: "Istok Web", sans-serif;
 }
 .index {
   display: grid;
@@ -151,6 +152,7 @@ body {
 .index .ingredients li {
   display: inline-block;
 }
+
 
 .index .delete {
   position: absolute;
@@ -180,7 +182,7 @@ ul {
   padding-inline-start: 10px;
 }
 div#app {
-  max-width: 800px;
-  margin: auto;
+    max-width: 960px;
+    margin: auto;
 }
 </style>

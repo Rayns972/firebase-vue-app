@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div style="width: 95%;margin: auto;">
     <div class="text-center">
       <h2 class="card-title">Ajouter un nouveau client</h2>
     </div>
-    <div class="card add" style="width: 80%">
+    <div class="card add">
       <form class="card-body add" @submit.prevent="AddClient">
         <form>
           <div class="form-row">
@@ -82,6 +82,15 @@
               <label for="inputZip">CP</label>
               <input type="text" class="form-control" name="cp" v-model="cp" />
             </div>
+
+            <div class="form-group col-md-12">
+              <label for="dateCrea">Date de livraison</label>
+              <datepicker
+                v-model="dateliv"
+                :format="customFormatter"
+                :language="fr"
+              ></datepicker>
+            </div>
           </div>
         </form>
 
@@ -149,25 +158,12 @@
           </div>
         </div>
         <button
-          class="btn btn-primary add"
+          class="btn-add"
           type="submit"
           @click.prevent="addIng()"
         >
           Ajouter
         </button>
-
-        <!-- <div v-for="(ing, index) in ingredients" :key="index" class="field">
-                <label for="ingredient">Articles :</label>
-                <input type="text" name="ingredient" v-model="ingredients[index]">
-                <i class="material-icons delete" @click="deleteIng(ing)">delete</i>
-            </div> -->
-
-        <!-- <div class="field add-ingredients">
-                <label for="add-ingredient">Ajouter articles</label>
-                
-                <input v-model="another" type="text"/>
-                
-            </div> -->
 
         <div
           class="row row-cols-4"
@@ -244,10 +240,10 @@
         <div class="save exit">
           <p v-if="feedback" class="red-text">{{ feedback }}</p>
 
-          <button type="submit" class="btn btn-primary">
+          <button type="submit" class="btn-save">
             {{ "Enregistrer" }}
           </button>
-          <router-link to="/" class="btn btn-primary">Annuler</router-link>
+          <router-link to="/" class="btn-cancel">Annuler</router-link>
         </div>
       </form>
     </div>
@@ -258,11 +254,19 @@
 <script>
 import db from "@/firebase/init";
 import slugify from "slugify";
+import "bootstrap/dist/css/bootstrap.css";
 
+import { fr } from "vuejs-datepicker/dist/locale";
+import Datepicker from "vuejs-datepicker";
+import moment from "moment";
 export default {
   name: "AddClient",
+
   data() {
     return {
+      fr: fr,
+
+      dateliv: new Date(),
       value: 1,
       articles: [],
       articlesAutoComplete: [],
@@ -284,11 +288,20 @@ export default {
       slug: null,
       titre: null,
       taille: null,
-
+      timestamp: null,
       name: null,
     };
   },
+
+  components: {
+    Datepicker,
+  },
+
   methods: {
+    customFormatter(date) {
+      return moment(date).format("D-MM-yyyy");
+    },
+
     AddClient() {
       if ((this.title, this.nom)) {
         this.feedback = null;
@@ -308,12 +321,13 @@ export default {
             adresse: this.adresse,
             ville: this.ville,
             cp: this.cp,
+
+            dateliv: new Date(this.dateliv),
             slug: this.slug,
             completed: false,
-            createdAt: new Date(),
+            timestamp: Date.now(),
           })
           .then((data) => {
-            
             // start with sub-collections --> Add data
             this.articles.forEach((element, index) => {
               db.collection("clients")
@@ -391,17 +405,25 @@ export default {
 </script>
 
 <style>
+div#app {
+    max-width: 960px;
+    margin: auto;
+}
 body {
   background: #3978b7;
-  font-family: "Ubuntu", sans-serif;
+  font-family: "IBM Plex Sans", sans-serif;
 }
-
+a {
+    font-size: 13px;
+}
 .card {
   border-left: 0px solid rgba(23, 143, 97, 0);
   border-radius: 6px;
   margin-bottom: 20px;
   margin: auto;
 }
+
+
 
 .add-client {
   margin-top: 0px;
@@ -459,58 +481,115 @@ body {
   top: 7px;
 }
 
-.btn.btn-primary {
-  color: #fff;
-  border-color: #408dc5;
-  background-color: #408dc5;
-}
-
-.btn.btn-primary:hover {
-  color: #408dc5;
-  border-color: #408dc5;
-  background-color: #fff;
-}
-.navbar-light .navbar-nav .nav-link:hover {
-    color: rgb(70 135 190) !important;
-    background-color: white;
-    border-color: rgb(70 135 190) !important;
-};
-span.material-icons.del {
-  position: relative;
-  top: 40px;
-  cursor: pointer;
-}
-
-button.btn.btn-primary.add {
-  margin-bottom: 15px;
-}
-
 .save.exit {
-  text-align: center;
-}
-
-a.btn.btn-primary.router-link-active {
-  background-color: gray;
-  border-color: gray;
-  color: white;
-}
-
-a.nav-link {
-  text-align: center;
-}
-
-.navbar-nav .nav-link {
-  padding-right: 10px;
-  padding-left: 10px;
+    text-align: center;
+    margin-top: 20px;
 }
 
 input[type="text"] {
-    width: 100% !important;
+  width: 100% !important;
 }
 
 span.material-icons.del {
-        position: relative;
-    top: 37px;
-    cursor: pointer;
+  position: relative;
+  top: 37px;
+  cursor: pointer;
+}
+.vdp-datepicker__calendar .cell.selected {
+  background: #4687be !important;
+}
+
+
+.btn-save {
+    margin-right: 5px;
+    margin-left: 5px;
+    margin-bottom: 10px;
+    background-color: #ffffff00;
+    border-radius: 6px;
+    border-style: solid;
+    padding: 5px 8px 4px 8px;
+    border-color: #4687be;
+    border-width: 1px;
+    color: white;
+    font-variant: all-petite-caps;
+    font-weight: 700;
+        font-size: 18px !important;
+        background-color: #4687be;
+}
+.btn-save:hover {
+    background-color: #72c7e7;
+    border-color: #72c7e7;
+}
+
+.btn-save.active {
+    background-color: #ffffff;
+    border-color: #ffffff;
+    color: #3978b7;
+}
+.row.row-cols-4 {
+    margin-top: 5px;
+}
+input[type="text"] {
+    display: block;
+    width: 100%;
+    height: calc(1.5em + .75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+}
+
+.btn-cancel {
+    margin-right: 5px;
+    margin-left: 5px;
+    margin-bottom: 10px;
+    background-color: #ffffff00;
+    border-radius: 6px;
+    border-style: solid;
+    padding: 5px 8px 4px 8px;
+    border-color: #b7b7b7;
+    border-width: 1px;
+    color: white;
+    font-variant: all-petite-caps;
+    font-weight: 700;
+        font-size: 18px !important;
+        background-color: #b7b7b7;
+}
+.btn-cancel:hover {
+    background-color: #72c7e7;
+    border-color: #72c7e7;
+    color: #fff;
+}
+
+.btn-cancel.active {
+    background-color: #ffffff;
+    border-color: #ffffff;
+    color: #3978b7;
+}
+
+.btn-add {
+    margin-right: 5px;
+    margin-left: 5px;
+    margin-bottom: 10px;
+    background-color: #ffffff00;
+    border-radius: 6px;
+    border-style: solid;
+    padding: 5px 8px 4px 8px;
+    border-color: #4687be;
+    border-width: 1px;
+    color: white;
+    font-variant: all-petite-caps;
+    font-weight: 700;
+        font-size: 18px !important;
+        background-color: #4687be;
+}
+.btn-add:hover {
+    background-color: #72c7e7;
+    border-color: #72c7e7;
 }
 </style>

@@ -1,15 +1,15 @@
 <template>
-  <nav class="filter-nav">
-    <button @click="updateFilter('all')" :class="{ active: current === 'all' }">
+  <nav class="filter-nav-cli">
+    <button class="button_cli" @click="updateFilter('all')" :class="{ active: current === 'all' }">
       Tout
     </button>
-    <button
+    <button class="button_cli"
       @click="updateFilter('complet')"
       :class="{ active: current === 'complet' }"
     >
       Fait
     </button>
-    <button
+    <button class="button_cli"
       @click="updateFilter('encours')"
       :class="{ active: current === 'encours' }"
     >
@@ -30,40 +30,35 @@ export default {
 </script>
 
 <style>
-
-.filter-nav button {
-  background: none;
-  border: none;
-  color: #fff;
-  outline: none;
-  font-size: 12px;
-  text-transform: uppercase;
-  margin-right: 10px;
-  letter-spacing: 1px;
-  font-weight: bold;
-  cursor: pointer;
-      padding: 0px 15px 0px 15px;
-}
-.material-icons:hover {
-    color: #a7a7a7;
-}
-button {
-  font-size: 16px !important;
-}
-.filtre {
-  padding-bottom: 10px;
+.filter-nav-cli {
+    text-align: center;
 }
 
-nav.filter-nav {
-  margin-left: auto;
-
-  width: 61%;
+.button_cli {
+    margin-right: 5px;
+    margin-left: 5px;
+    margin-bottom: 10px;
+    background-color: #ffffff00;
+    border-radius: 6px;
+    border-style: solid;
+    padding: 5px 8px 4px 8px;
+    border-color: white;
+    border-width: 1px;
+    color: white;
+    font-variant: all-petite-caps;
+    font-weight: 700;
+        font-size: 18px !important;
 }
-.filter-nav button.active {
-  color: #fff;
-  color: #4d94c7;
-  background: #ffffff;
-  padding: 5px 10px 5px 10px;
-  border-radius: 10px;
+.button_cli:hover {
+    background-color: #72c7e7;
+    border-color: #72c7e7;
+}
+.button_cli.active {
+    background-color: #ffffff;
+    border-color: #ffffff;
+    color: #3978b7;
+}
+a {
+    font-size: 13px;
 }
 </style>

@@ -8,7 +8,7 @@
           <form action="index.html">
             <div>
               <i class="material-icons prefix">email</i>
-              <span class="blue-text" for="email">Addresse email</span>
+              <span class="blue-text" for="email">Adresse email</span>
               <input type="email" align="center" class="form-control" id="email"  v-model="email">
               
             </div>
@@ -51,7 +51,7 @@ export default {
         .signInWithEmailAndPassword(this.email, this.password)
         .then(
           user => {
-            alert(`You are logged in as ${user.email}`);
+            
             this.$router.push('/');
           },
           err => {
@@ -64,7 +64,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 
 
 input:focus {
@@ -99,16 +99,17 @@ input:focus {
     
     
     margin-bottom: 27px;
-    font-family: 'Ubuntu', sans-serif;
+    
 }
 
  body {
         background-color: #3f8dc5;
-        font-family: 'Ubuntu', sans-serif;
+        font-family: 'IBM Plex Sans', sans-serif;
     }
     
-    span.blue-text {
-    vertical-align: top;
+span.blue-text {
+    vertical-align: middle;
+    color: #2d6188;
 }
     .main {
         background-color: #FFFFFF;
@@ -122,12 +123,14 @@ input:focus {
     .sign {
         padding-top: 40px;
         color: #8C55AA;
-        font-family: 'Ubuntu', sans-serif;
+        
         font-weight: bold;
         font-size: 23px;
     }
     
-    
+    a {
+    font-size: 13px;
+}
     
     form.form1 {
         padding-top: 40px;
@@ -150,7 +153,7 @@ input:focus {
     margin-left: 46px !important;
     text-align: center!important;
     margin-bottom: 27px !important;
-    font-family: 'Ubuntu', sans-serif !important;
+    
     }
     
    

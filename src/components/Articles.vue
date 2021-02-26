@@ -3,21 +3,21 @@
 
 
 <template>
-  <div>
+  <div style="width: 95%;margin: auto;">
     <div class="text-center">
       <h2 class="card-title">Ajouter un nouvel article</h2>
     </div>
-    <div class="card mx-auto art" style="width: 600px">
-      <div class="card-body">
-        <label for="">Article :</label>
-        <input type="text" name="titre" v-model="titre" />
-        <button @click="submitName()" class="btn btn-primary">Ajouter</button>
-        <p v-if="feedback" class="red-text">{{ feedback }}</p>
-      </div>
+    <div class="form-row">
+      <div class="form-group col-md-11" >
+        
+        <input class="form-control" type="text" name="titre" placeholder="Article :" v-model="titre" /></div>
+        <div class="but-add col-md-1" ><button @click="submitName()" class="btn-adda">Ajouter</button>
+        <p v-if="feedback" class="red-text">{{ feedback }}</p></div>
+   
     </div>
 
-    <div class="card mx-auto" style="width: 600px">
-      <ul class="list-group" v-for="article in articles" :key="article.id">
+    <div class="card mx-auto">
+      <ul class="article-list" v-for="article in articles" :key="article.id">
         <li class="list-group-item">
           <span class="art-txt">{{ article.titre }}</span>
           <i class="material-icons delete" @click="deleteArticle(article.id)"
@@ -26,7 +26,7 @@
         </li>
       </ul>
     </div>
-    <br>
+    <br />
   </div>
 </template>
 
@@ -74,7 +74,9 @@ export default {
 
   created() {
     db.collection("articles")
+      .orderBy("titre", "asc")
       .get()
+
       .then((snapshot) => {
         snapshot.forEach((doc) => {
           let article = doc.data();
@@ -87,22 +89,51 @@ export default {
 </script>
 
 <style>
+
+.btn-adda {
+        margin-bottom: 10px;
+    background-color: #ffffff00;
+    border-radius: 6px;
+    border-style: solid;
+    padding: 5px 8px 4px 8px;
+    border-color: #ffffff;
+    border-width: 1px;
+    color: white;
+    font-variant: all-petite-caps;
+    font-weight: 700;
+    font-size: 18px !important;
+    background-color: #4687be;
+}
+.btn-adda:hover {
+    background-color: #72c7e7;
+    border-color: #72c7e7;
+}
+a {
+    font-size: 13px;
+}
+.but-add.col-md-2 {
+    text-align: right;
+}
+div#app {
+    max-width: 960px;
+    margin: auto;
+}
 .text-center {
   text-align: center !important;
   color: white;
   padding-bottom: 15px;
 }
-.list-group-item {
-  border: 0px solid rgba(0, 0, 0, 0.125);
+.article-list {
+    margin-bottom: 0px;
+    padding-left: 0px;
+    margin-top: 0px;
 }
 
 .red-text {
   color: red;
 }
 
-input[type="text"] {
-  width: 392px;
-}
+
 i.material-icons.delete {
   position: absolute;
   right: 6px;
@@ -114,17 +145,7 @@ i.material-icons.delete:hover {
   color: #3f8dc5;
 }
 
-.btn-primary {
-  background-color: #408dc5 !important;
-  border-color: #408dc5 !important;
-  margin-left: 20px;
-}
 
-.btn-primary:hover {
-  color: #408dc5;
-  background-color: #fff !important;
-  border-color: #408dc5 !important;
-}
 .card.mx-auto.art {
   margin-bottom: 20px;
 }
@@ -147,7 +168,7 @@ i.material-icons.delete:hover {
 
 body {
   background: #3978b7;
-  font-family: "Ubuntu", sans-serif;
+  font-family: "IBM Plex Sans", sans-serif;
 }
 .index {
   display: grid;
@@ -205,5 +226,13 @@ hr.dotted {
   padding-left: 0;
   margin-bottom: 0;
   border-radius: 0rem;
+}
+.list-group-item {
+    position: relative;
+    display: block;
+    padding: .75rem 1.25rem;
+    background-color: #fff;
+    border: 0px solid rgba(0,0,0,.125);
+    border-bottom: 1px solid rgba(0,0,0,.125);
 }
 </style>

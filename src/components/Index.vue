@@ -1,11 +1,46 @@
 <template>
   <div class="home">
+
+<div class="row recap">
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body recap">
+        <h5 class="card-title"><strong> XX Clients  </strong></h5>
+        
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body recap">
+        <h5 class="card-title"><strong>Reste à faire XX / XX</strong></h5>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  
+            
+    
+    
     <div class="filtre">
       <FilterNav @filterChange="current = $event" :current="current" />
+      
     </div>
-    <div v-for="client in filteredClients" :key="client.id">
+    
+     
+    <input class="form-control search" type="text" placeholder="Chercher client"/>
+        
+ 
+   
+      
+        <div v-for="client in filteredClients" :key="client.id">
       <SingleClient :client="client" />
+    
     </div>
+<br>
     
   </div>
 </template>
@@ -16,12 +51,17 @@ import SingleClient from "../components/SingleClient.vue";
 import FilterNav from "../components/FilterNav.vue";
 
 
+
 export default {
   name: "Index",
   components: { SingleClient, FilterNav },
   data() {
     return {
       clients: [],
+      articles: [],
+      article: { isChecked: "" },
+      completed: false,
+    
 
       showDetails: false,
       current: "all",
@@ -44,6 +84,11 @@ export default {
     },
   },
   computed: {
+
+
+
+
+
     filteredClients() {
       if (this.current === "complet") {
         return this.clients.filter((client) => client.completed);
@@ -54,11 +99,13 @@ export default {
       return this.clients;
     },
   },
+
+ 
   created() {
     //récuperer data de firestore
 
     db.collection("clients")
-      .orderBy("createdAt", "desc")
+      .orderBy("timestamp", "desc")
 
       .get()
       .then((snapshot) => {
@@ -97,6 +144,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+div#app {
+    max-width: 960px;
+    margin: auto;
+}
 .index {
   display: block !important;
   grid-template-columns: 1fr 1fr 1fr;
@@ -105,6 +156,19 @@ export default {
   /* width: 90%; */
 }
 
+.card-body.recap {
+    padding: 10px 10px 0px 10px !important;
+    background-color: #3978b7 !important;
+    color: white !important;
+}
+.row.recap {
+    border-bottom: 0px !important;
+    text-align: center;
+    margin-bottom: 30px !important;
+    margin-left: -15px !important;
+    margin-right: -15px !important;
+    /* padding: 10px 10px 0px 10px; */
+}
 .collection {
   margin: -0.7rem 0 1rem 0;
   border: 1px solid #e0e0e0;
@@ -113,10 +177,18 @@ export default {
   position: relative;
 }
 
+input.form-control.search {
+    margin-top: 10px;
+}
+
+a {
+    font-size: 13px;
+}
+
 body {
   background: #3978b7;
 
-  font-family: "Ubuntu", sans-serif;
+  font-family: "IBM Plex Sans", sans-serif;
 }
 .index {
   display: grid;
@@ -170,8 +242,19 @@ div#app {
 }
 
 .home {
-    /* width: 900px; */
-    width: 80%;
+    
+    width: 95%;
     margin: auto;
 }
+
+a.btn.btn-primary.router-link-active {
+  background-color: gray;
+  border-color: gray;
+  color: white;
+}
+
+
+
+
+
 </style>

@@ -162,7 +162,9 @@ export default {
   border-radius: 6px;
       margin-bottom: 20px;
 }
-
+a {
+    font-size: 13px;
+}
 .completed {
   text-decoration: line-through;
   color: grey;
@@ -178,7 +180,7 @@ export default {
 
 body {
   background-color: #3f8dc5;
-  font-family: "Ubuntu", sans-serif;
+  font-family: "IBM Plex Sans", sans-serif;
 }
 .index {
   display: grid;
@@ -227,4 +229,5 @@ ul {
   padding-inline-start: 10px;
 }
 </style>
+
 

@@ -9,9 +9,21 @@ import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.css';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import VueApexCharts from 'vue-apexcharts'
 
+
+import DateFilter from './filters/date'
+
+Vue.use(VueApexCharts)
+Vue.filter('date', DateFilter )
+Vue.filter('pluralize', (word, amount) => (amount > 1 || amount === 0) ? `${word}s` : word)
 
 Vue.use(VueMaterial)
+Vue.use(require('vue-moment'));
+
+
+
+
 Vue.config.productionTip = false;
 
 let app;

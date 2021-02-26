@@ -1,138 +1,184 @@
 <template>
-    <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    
-    <router-link :to="{ name: 'Index' }">
-                    <img width="150" src="@/assets/logo_Far_350_c.png"></router-link>
+ <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand">
+        <img width="150" src="@/assets/logo_Far_350_c.png"
+      /></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-    <li class="nav-item">
-          <router-link :to="{ name: 'Index' }" v-if="isLoggedIn" class="nav-link">Tableau de bord</router-link>
-        </li>
-         <li class="nav-item">
-          <router-link :to="{ name: 'AddClient' }" v-if="isLoggedIn" class="nav-link">Ajouter client</router-link>
-        </li>
-
-        <li class="nav-item">
-          <router-link :to="{ name: 'Articles' }" v-if="isLoggedIn" class="nav-link">Ajouter articles</router-link>
-        </li>
-         <li class="nav-item">
-          <router-link :to="{ name: 'Order' }" v-if="isLoggedIn" class="nav-link">Ordre</router-link>
-        </li>
-
-       
-
-       
-      </ul>
-    <form class="d-flex">
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
       
-     
-      <a v-if="isLoggedIn"><button v-on:click="logout" class="btn btn-outline-primary">Déconnecter</button></a>
-                
-    </form>
+      <li class="nav-item" v-if="isLoggedIn">
+        <a class="nav-link"><router-link
+            :to="{ name: 'Index' }"
+            
+            
+            >Tableau de bord</router-link
+          ></a>
+      </li>
+      
+      <li class="nav-item" v-if="isLoggedIn">
+        <a class="nav-link"><router-link
+            :to="{ name: 'AddClient' }"
+            
+            
+            >Ajouter client</router-link
+          ></a>
+      </li>
+
+      <li class="nav-item" v-if="isLoggedIn">
+        <a class="nav-link"><router-link
+            :to="{ name: 'Articles' }"
+            
+            
+            >Ajouter articles</router-link
+          ></a>
+      </li>
+<li class="nav-item" v-if="isLoggedIn">
+        <a class="nav-link"><router-link
+            :to="{ name: 'Order' }"
+            
+            
+            >Ordre</router-link
+          ></a>
+      </li>
+      
+    </ul>
+    
+    
+     <form class="d-flex">
+        <a v-if="isLoggedIn"
+          ><button v-on:click="logout" class="btn btn-outline-primary">
+            Déconnecter
+          </button></a
+        >
+      </form>
   </div>
 </nav>
-     
-    
 </template>
 
 <script>
-import firebase from 'firebase'
+import firebase from "firebase";
 export default {
-    name: 'Navbar',
-    data() {
-        return {
-            isLoggedIn: false,
-            currentUser: false
-        }
-    },
-    created() {
-        if(firebase.auth().currentUser) {
-            this.isLoggedIn = true;
-            this.currentUser = firebase.auth().currentUser.email;
-        }
-    },
-    methods: {
-        logout: function(){
-            firebase.auth().signOut().then(() => {
-                this.$router.push('/login');
-            });
-        }
+  name: "Navbar",
+  data() {
+    return {
+      isLoggedIn: false,
+      currentUser: false,
+    };
+  },
+  created() {
+    if (firebase.auth().currentUser) {
+      this.isLoggedIn = true;
+      this.currentUser = firebase.auth().currentUser.email;
     }
-}
+  },
+  methods: {
+    logout: function () {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          this.$router.push("/login");
+        });
+    },
+  },
+};
 </script>
 
 <style>
 ul.right {
-    padding-top: 18px;
+  padding-top: 18px;
 }
-.navbar nav{
-    padding: 0 20px;
+.navbar nav {
+  padding: 0 20px;
 }
 
 div#app {
-    padding-top: 150px;
+  padding-top: 150px;
 }
 
 .btn-outline-primary {
-    color: #408dc5;
-    border-color: #408dc5;
+  color: #408dc5;
+  border-color: #408dc5;
 }
 
 .btn-outline-primary:hover {
+  color: #fff;
+  background-color: #408dc5;
+  border-color: #408dc5;
+}
+.btn-outline-success:hover {
     color: #fff;
-    background-color: #408dc5;
-    border-color: #408dc5;
+    background-color: #3978b7;
+    border-color: #3978b7;
 }
-.navbar-light .navbar-nav .nav-link {
-    color: rgb(255 255 255);
-}
-li.nav-item {
-   
-    color: #fff;
-    background: #4587bf;
-    padding: 0px 0px 0px 0px;
-    border-radius: 5px;
-    margin-left: 5px;
-    margin-right: 5px;
-        margin-bottom: 5px;
-}
-.navbar-light .navbar-nav .nav-link:hover {
-    color: rgb(70 135 190);
-    background-color: white;
-    border-color: rgb(70 135 190) !important;
+.btn-outline-success:not(:disabled):not(.disabled).active, .btn-outline-success:not(:disabled):not(.disabled):active, .show>.btn-outline-success.dropdown-toggle {
+    color: #ffffff;
+    background-color: #71c7e8;
+    border-color: #71c7e8;
 }
 
-
-
-li.nav-item:hover {
-   
-    color: #4587bf;
-    border-color: #4587bf;
-    background: #fff;
-    padding: 0px 5px 0px 5px;
-    border-radius: 5px;
-    margin-left: 5px;
-    margin-right: 5px;
-        margin-bottom: 5px;
-        text-decoration: none !important;
-        
+.btn-outline-success.focus, .btn-outline-success:focus {
+    -webkit-box-shadow: 0 0 0 0.2rem rgb(57 120 183 / 68%);
+    box-shadow: 0 0 0 0.2rem rgb(57 120 183 / 55%);
 }
 
-
-
-a.nav-link.router-link-exact-active.router-link-active {
-    color: #fff!important;
-    border-color: #4587bf;
-    background: #71c7e8;
-    border-radius: 5px;
+.btn-outline-success:not(:disabled):not(.disabled).active:focus, .btn-outline-success:not(:disabled):not(.disabled):active:focus, .show>.btn-outline-success.dropdown-toggle:focus {
+    -webkit-box-shadow: 0 0 0 0.2rem rgb(57 120 183 / 68%);
+    box-shadow: 0 0 0 0.2rem rgb(57 120 183 / 55%);
 }
 
-.nav-link:hover {
-    color: rgb(70 135 190);
+a {
+    font-size: 13px;
+}
+
+a.nav-link {
+    font-size: 13px;
+}
+a.router-link-exact-active.router-link-active {
+    color: white;
+}
+
+.btn-outline-success {
+    color: #3978b7;
+    border-color: #3978b7;
+    margin-right: 10px;
+}
+
+.mr-auto, .mx-auto {
+    margin-right: auto!important;
+    margin-left: auto;
+}
+a {
+    color: #3978b7;
+    text-decoration: none;
+    background-color: transparent;
 }
 a:not(.md-button):hover {
-    text-decoration: none;
+  text-decoration: none;
 }
-
+ul.navbar-nav.mr-auto {
+    margin-top: 0px;
+}
+a.nav-link {
+    
+    
+    border-radius: 7px;
+    /* color: brown; */
+    margin: 5px 5px 5px 5px;
+    text-align: center;
+    padding-right: 0;
+    padding-left: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+a.router-link-exact-active.router-link-active {
+    color: white;
+    background-color: #3978b7;
+    border-radius: 5px;
+    padding: 10px;
+}
 </style>
