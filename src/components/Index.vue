@@ -98,18 +98,16 @@ export default {
         return this.clients.filter(client => !client.completed);
       } else if (this.search) {
         return this.clients.filter(c => {
-          const name = `${c.title} ${c.nom}`;
-          return includes(name, this.search);
+          let name = `${c.title} ${c.nom}`;
+          return includes(name.toLowerCase(), this.search.toLowerCase());
         });
       } else {
         return this.clients;
       }
     }
   },
-
   created() {
     //récuperer data de firestore
-
     db.collection("clients")
       .orderBy("timestamp", "desc")
 
