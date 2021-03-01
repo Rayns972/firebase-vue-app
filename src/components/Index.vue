@@ -1,47 +1,44 @@
 <template>
   <div class="home">
-
-<div class="row recap">
-  <div class="col-sm-6">
-    <div class="card">
-      <div class="card-body recap">
-        <h5 class="card-title"><strong> XX Clients  </strong></h5>
-        
+    <div class="row recap">
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-body recap">
+            <h5 class="card-title">
+              <strong>
+                {{ filteredClients.length }}
+                {{ filteredClients.length > 1 ? "Clients" : "Client" }}
+              </strong>
+            </h5>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-body recap">
+            <h5 class="card-title">
+              <strong>Reste à faire {{ renaiming }} / {{ remaining2 }}</strong>
+            </h5>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="col-sm-6">
-    <div class="card">
-      <div class="card-body recap">
-        <h5 class="card-title"><strong>Reste à faire XX / XX</strong></h5>
-        
-      </div>
-    </div>
-  </div>
-</div>
 
-
-  
-            
-    
-    
     <div class="filtre">
       <FilterNav @filterChange="current = $event" :current="current" />
-      
     </div>
-    
-     
-    <input class="form-control search" type="text" placeholder="Chercher client"/>
-        
- 
-   
-      
-        <div v-for="client in filteredClients" :key="client.id">
+
+    <input
+      class="form-control search"
+      type="text"
+      v-model="search"
+      placeholder="Chercher client"
+    />
+
+    <div v-for="client in filteredClients" :key="client.id">
       <SingleClient :client="client" />
-    
     </div>
-<br>
-    
+    <br />
   </div>
 </template>
 
@@ -49,8 +46,7 @@
 import db from "@/firebase/init";
 import SingleClient from "../components/SingleClient.vue";
 import FilterNav from "../components/FilterNav.vue";
-
-
+import { includes } from "lodash";
 
 export default {
   name: "Index",
@@ -61,11 +57,9 @@ export default {
       articles: [],
       article: { isChecked: "" },
       completed: false,
-    
-
+      search: "",
       showDetails: false,
-      current: "all",
-      
+      current: "all"
     };
   },
 
@@ -74,33 +68,45 @@ export default {
       db.collection("clients")
         .doc(id)
         .update({
-          articles: db.FieldValue.arrayUnion("value1", "value2"),
+          articles: db.FieldValue.arrayUnion("value1", "value2")
         })
         .then(() => {
-          this.clients = this.clients.filter((client) => {
-            return client.id != id;
-          });
+          this.clients = this.clients.filter(client => client.id != id);
         });
-    },
+    }
   },
   computed: {
-
-
-
-
-
+    renaiming() {
+      let renaiming = 0;
+      this.filteredClients.map(c => {
+        const rm = c.articles.filter(a => !a.isChecked);
+        renaiming += rm.length;
+      });
+      return renaiming;
+    },
+    remaining2() {
+      let renaiming = 0;
+      this.filteredClients.map(c => {
+        renaiming += c.articles.length;
+      });
+      return renaiming;
+    },
     filteredClients() {
       if (this.current === "complet") {
-        return this.clients.filter((client) => client.completed);
+        return this.clients.filter(client => client.completed);
+      } else if (this.current === "encours") {
+        return this.clients.filter(client => !client.completed);
+      } else if (this.search) {
+        return this.clients.filter(c => {
+          const name = `${c.title} ${c.nom}`;
+          return includes(name, this.search);
+        });
+      } else {
+        return this.clients;
       }
-      if (this.current === "encours") {
-        return this.clients.filter((client) => !client.completed);
-      }
-      return this.clients;
-    },
+    }
   },
 
- 
   created() {
     //récuperer data de firestore
 
@@ -108,8 +114,8 @@ export default {
       .orderBy("timestamp", "desc")
 
       .get()
-      .then((snapshot) => {
-        snapshot.forEach((doc) => {
+      .then(snapshot => {
+        snapshot.forEach(doc => {
           let client = doc.data();
           client.id = doc.id;
 
@@ -118,8 +124,8 @@ export default {
             .doc(doc.id)
             .collection("articles")
             .get()
-            .then((snapshot) => {
-              snapshot.forEach((doc) => {
+            .then(snapshot => {
+              snapshot.forEach(doc => {
                 // get sub-collection data
                 let article = doc.data();
 
@@ -138,15 +144,15 @@ export default {
             });
         });
       });
-  },
+  }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 div#app {
-    max-width: 960px;
-    margin: auto;
+  max-width: 960px;
+  margin: auto;
 }
 .index {
   display: block !important;
@@ -157,17 +163,17 @@ div#app {
 }
 
 .card-body.recap {
-    padding: 10px 10px 0px 10px !important;
-    background-color: #3978b7 !important;
-    color: white !important;
+  padding: 10px 10px 0px 10px !important;
+  background-color: #3978b7 !important;
+  color: white !important;
 }
 .row.recap {
-    border-bottom: 0px !important;
-    text-align: center;
-    margin-bottom: 30px !important;
-    margin-left: -15px !important;
-    margin-right: -15px !important;
-    /* padding: 10px 10px 0px 10px; */
+  border-bottom: 0px !important;
+  text-align: center;
+  margin-bottom: 30px !important;
+  margin-left: -15px !important;
+  margin-right: -15px !important;
+  /* padding: 10px 10px 0px 10px; */
 }
 .collection {
   margin: -0.7rem 0 1rem 0;
@@ -178,11 +184,11 @@ div#app {
 }
 
 input.form-control.search {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 a {
-    font-size: 13px;
+  font-size: 13px;
 }
 
 body {
@@ -237,14 +243,12 @@ ul {
   padding-inline-start: 10px;
 }
 div#app {
-  
   margin: auto;
 }
 
 .home {
-    
-    width: 95%;
-    margin: auto;
+  width: 95%;
+  margin: auto;
 }
 
 a.btn.btn-primary.router-link-active {
@@ -252,9 +256,4 @@ a.btn.btn-primary.router-link-active {
   border-color: gray;
   color: white;
 }
-
-
-
-
-
 </style>

@@ -8,9 +8,8 @@
       />
     </div>
     <div v-for="(client, i, k) in currentClient" :key="k">
-      <SingleClient :client="client"/>
+      <SingleClient :client="client" />
     </div>
-    
   </div>
 </template>
 
@@ -18,7 +17,7 @@
 import db from "@/firebase/init";
 import SingleClient from "../components/SingleClient.vue";
 import FilterClientsNav from "../components/FilterClientsNav.vue";
-
+import { uniq } from "lodash";
 
 export default {
   name: "Index",
@@ -57,7 +56,7 @@ export default {
       this.filteredClients.map(c =>
         c.articles.map(n => (n.name === current.name ? cClient.push(c) : null))
       );
-      return cClient;
+      return uniq(cClient);
     },
     filteredClients() {
       return this.clients;
@@ -118,7 +117,7 @@ export default {
 }
 
 a {
-    font-size: 13px;
+  font-size: 13px;
 }
 
 .collection {
@@ -153,7 +152,6 @@ body {
   display: inline-block;
 }
 
-
 .index .delete {
   position: absolute;
   top: 6px;
@@ -182,7 +180,7 @@ ul {
   padding-inline-start: 10px;
 }
 div#app {
-    max-width: 960px;
-    margin: auto;
+  max-width: 960px;
+  margin: auto;
 }
 </style>
